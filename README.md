@@ -1,211 +1,226 @@
 # ASTA - Automated Sequence Taxonomy Agent
 
-**ASTA**（Automatic Sequence Taxonomy Agent，自动序列分类学智能体）
+**ASTA** (Automated Sequence Taxonomy Agent)
 
-基于智能体的序列比对与物种鉴定自动化流程
+Agent-driven automated pipeline for sequence alignment and species identification
 
-## 流程简介
+## Overview
 
-本流程是一个完整的序列分类学分析自动化工具，通过智能体驱动实现从原始序列数据到最终分析报告的全流程自动化处理。流程整合了序列采样、BLAST比对、分类学注释、统计分析及报告生成等关键步骤，适用于微生物组学、环境样本、临床样本等领域的物种鉴定与分类学分析。
+ASTA is a comprehensive automated tool for sequence taxonomy analysis, powered by intelligent agents to achieve full automation from raw sequence data to final analysis reports. The pipeline integrates key steps including sequence sampling, BLAST alignment, taxonomic annotation, statistical analysis, and report generation. It is suitable for species identification and taxonomic analysis in microbiomics, environmental samples, clinical samples, and other research fields.
 
-### 主要功能
+### Key Features
 
-- **自动化流程执行**：智能体自动驱动流程各步骤，无需手动干预
-- **序列采样与预处理**：支持 FASTQ/FASTA 格式，随机采样与格式转换
-- **高效 BLAST 比对**：多线程并行计算，支持自定义数据库与参数
-- **分类学注释**：自动获取完整的分类学层级信息（界-种）
-- **可视化分析**：生成各分类层级的统计图表（风玫瑰图/饼图）
-- **报告自动生成**：输出 HTML 和 PDF 格式的专业分析报告
+- **Automated Pipeline Execution**: Intelligent agents automatically drive all pipeline steps without manual intervention
+- **Sequence Sampling and Preprocessing**: Supports FASTQ/FASTA formats with random sampling and format conversion
+- **Efficient BLAST Alignment**: Multi-threaded parallel computation with customizable databases and parameters
+- **Taxonomic Annotation**: Automatically retrieves complete taxonomic hierarchy information (Kingdom to Species)
+- **Visualization Analysis**: Generates statistical charts for each taxonomic level (wind rose/pie charts)
+- **Automated Report Generation**: Outputs professional analysis reports in HTML and PDF formats
 
-## 流程架构
+## Pipeline Architecture
 
-流程包含 5 个顺序执行的步骤：
+The pipeline consists of 5 sequential steps:
 
-| 步骤 | 脚本 | 功能 |
-|------|------|------|
-| 1 | `01_seqs_sample.sh` | 序列采样与格式转换 |
-| 2 | `02_blastn.sh` | BLAST 序列比对 |
-| 3 | `03_taxonmy.sh` | 分类学注释 |
-| 4 | `04_statistic.py` | 统计分析与可视化 |
-| 5 | `05_md_converter.py` | 报告生成（HTML/PDF） |
+| Step | Script               | Function                                |
+| ---- | -------------------- | --------------------------------------- |
+| 1    | `01_seqs_sample.sh`  | Sequence sampling and format conversion |
+| 2    | `02_blastn.sh`       | BLAST sequence alignment                |
+| 3    | `03_taxonmy.sh`      | Taxonomic annotation                    |
+| 4    | `04_statistic.py`    | Statistical analysis and visualization  |
+| 5    | `05_md_converter.py` | Report generation (HTML/PDF)            |
 
-## 环境要求
+## Requirements
 
-### 必需软件工具
+### Required Software Tools
 
-- **SeqKit** (v2.9.0+) - 序列处理工具
-- **BLAST+** (v2.17.0+) - 序列比对工具
-- **TaxonKit** (v0.20.0+) - 分类学信息查询工具
-- **Python** (v3.12+) - 数据分析与可视化
+- **SeqKit** (v2.9.0+) - Sequence processing tool
+- **BLAST+** (v2.17.0+) - Sequence alignment tool
+- **TaxonKit** (v0.20.0+) - Taxonomic information query tool
+- **Python** (v3.12+) - Data analysis and visualization
 
-### 必需 Python 包
+### Required Python Packages
 
 ```bash
 pip install pandas matplotlib markdown weasyprint
 ```
 
-### 必需数据库
+### Required Databases
 
-- **BLAST 数据库**：如 `core_nt`、`nt` 等 NCBI 核酸数据库
-- **TaxonKit 数据库**：taxdump 文件（自动下载到 `~/.taxonkit/`）
+- **BLAST Database**: NCBI nucleotide databases such as `core_nt`, `nt`, etc.
+- **TaxonKit Database**: taxdump files (automatically downloaded to `~/.taxonkit/`)
 
-## 安装
+## Installation
 
-### 方式一：使用 Conda（推荐）
+### Option 1: Using Conda (Recommended)
 
 ```bash
-# 创建环境并安装依赖
-conda create -n ncbi_pipeline python=3.12
-conda activate ncbi_pipeline
+# Create environment and install dependencies
+conda create -n asta_pipeline python=3.12
+conda activate asta_pipeline
 conda install -c bioconda seqkit blast taxonkit
 pip install pandas matplotlib markdown weasyprint
 ```
 
-### 方式二：手动安装
+### Option 2: Manual Installation
 
-请参考各软件官方文档进行安装：
+Please refer to official documentation for each software:
 
-- SeqKit: https://github.com/shenwei356/seqkit
-- BLAST+: https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/
-- TaxonKit: https://github.com/shenwei356/taxonkit
+- SeqKit: <https://github.com/shenwei356/seqkit>
+- BLAST+: <https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/>
+- TaxonKit: <https://github.com/shenwei356/taxonkit>
 
-## 使用方法
+## Usage
 
-本流程支持两种运行方式：**智能体驱动运行（推荐）** 和 **手动分步运行**。
+ASTA supports two execution modes: **Agent-driven Execution (Recommended)** and **Manual Step-by-step Execution**.
 
-### 方式一：智能体驱动运行（推荐）
+### Mode 1: Agent-driven Execution (Recommended)
 
-通过智能体（如 Trae IDE）运行流程，这是推荐的运行方式，具有以下优势：
+Running the pipeline through an intelligent agent (such as Trae IDE) is the recommended method with the following advantages:
 
-- **自动化程度高**：智能体自动驱动流程各步骤，无需手动干预
-- **参数智能配置**：智能体协助收集和验证分析参数
-- **错误自动处理**：智能体可诊断并处理常见运行错误
-- **报告智能生成**：智能体自动生成符合模板格式的专业报告
+- **High Automation**: Agent automatically drives all pipeline steps without manual intervention
+- **Intelligent Parameter Configuration**: Agent assists in collecting and validating analysis parameters
+- **Automatic Error Handling**: Agent can diagnose and handle common runtime errors
+- **Intelligent Report Generation**: Agent automatically generates professional reports following template format
 
-**运行步骤**：
+**Execution Steps**:
 
-1. 在智能体环境中打开流程目录
-2. 向智能体发出运行指令：
+1. Open the pipeline directory in an agent environment
+2. Issue a run command to the agent:
 
 ```
-用户指令: 开始运行当前流程
+User command: Run the current pipeline
 ```
 
-3. 智能体将自动执行以下操作：
-   - 选择并验证运行环境
-   - 收集并确认分析参数
-   - 顺序执行各步骤
-   - 生成最终分析报告
+1. The agent will automatically perform the following operations:
+   - Select and validate the runtime environment
+   - Collect and confirm analysis parameters
+   - Execute steps sequentially
+   - Generate final analysis report
 
-### 方式二：手动分步运行
+### Mode 2: Manual Step-by-step Execution
 
-如需手动执行流程，可按以下步骤操作：
+If you need to execute the pipeline manually, follow these steps:
 
-#### 参数说明
+#### Parameter Specification
 
-运行流程时需提供以下参数：
+The following parameters are required when running the pipeline:
 
-| 参数 | 说明 | 默认值 |
-|------|------|--------|
-| 输入文件 | FASTQ/FASTA 格式序列文件 | 必需 |
-| 输出目录 | 结果输出目录 | `result/` |
-| 采样数量 | 随机采样的序列数 | `1000` |
-| BLAST 数据库 | 数据库名称或路径 | `core_nt` |
-| BLAST 线程数 | 并行计算的线程数 | `8` |
-| Max target seqs | 每条序列最多保留的匹配数 | `10` |
-| Top N | 可视化展示的 Top 分类单元数 | `5` |
+| Parameter        | Description                                     | Default Value |
+| ---------------- | ----------------------------------------------- | ------------- |
+| Input file       | FASTQ/FASTA sequence file                       | Required      |
+| Output directory | Output directory for results                    | `result/`     |
+| Sample size      | Number of sequences to randomly sample          | `1000`        |
+| BLAST database   | Database name or path                           | `core_nt`     |
+| BLAST threads    | Number of threads for parallel computation      | `8`           |
+| Max target seqs  | Maximum matches to retain per sequence          | `10`          |
+| Top N            | Number of top taxonomic units for visualization | `5`           |
 
-#### 手动执行命令
+#### Manual Execution Commands
 
-如需手动执行各步骤，可使用以下命令：
+If you need to execute each step manually, use the following commands:
 
 ```bash
-# 1. 序列采样
+# 1. Sequence sampling
 bash 01_seqs_sample.sh -i input.fq -o sample.fa -n 1000
 
-# 2. BLAST比对
+# 2. BLAST alignment
 bash 02_blastn.sh -Q sample.fa -D core_nt -J 48 -M 10 -O blastn_result.tsv
 
-# 3. 分类学注释
+# 3. Taxonomic annotation
 bash 03_taxonmy.sh -i blastn_result.tsv -o taxon_info.tsv
 
-# 4. 统计分析（各分类层级）
+# 4. Statistical analysis (each taxonomic level)
 python3 04_statistic.py -i taxon_info.tsv -r Kingdom -n 5 -o result/
 python3 04_statistic.py -i taxon_info.tsv -r Phylum -n 5 -o result/
-# ... 其他分类层级
+# ... other taxonomic levels
 
-# 5. 报告生成
-# Markdown 报告需由智能体根据 template.md 模板和运行结果生成
-# 然后转换为 HTML 和 PDF 格式
+# 5. Report generation
+# Markdown report must be generated by agent based on template.md and execution results
+# Then convert to HTML and PDF formats
 python3 05_md_converter.py result/seqs_taxonomy_report.md -o result/report
 ```
 
-**注意**：步骤 5 中的 Markdown 报告（`seqs_taxonomy_report.md`）需要由智能体根据流程运行结果和 `template.md` 模板自动生成，包含方法学描述、统计结果和结论分析。智能体会提取软件版本信息、整合各分类层级统计数据，并按照模板格式生成完整报告。
+**Note**: Step 5 requires the Markdown report (`seqs_taxonomy_report.md`) to be generated by an intelligent agent based on pipeline execution results and the `template.md` template. The agent extracts software version information, integrates taxonomic statistical data, and generates a complete report following the template format.
 
-## 输出文件
+## Output Files
 
-流程完成后将生成以下文件：
+After pipeline completion, the following files are generated:
 
-| 文件 | 说明 |
-|------|------|
-| `sample<N>.fa` | 采样的 FASTA 序列文件 |
-| `blastn_result.tsv` | BLAST 比对结果 |
-| `taxon_info.tsv` | 分类学注释信息 |
-| `taxon_info_<rank>_top<N>_summary.tsv` | 各分类层级统计表格 |
-| `taxon_info_<rank>_top<N>_pie.png/pdf` | 各分类层级饼图 |
-| `seqs_taxonomy_report.html` | HTML 格式分析报告 |
-| `seqs_taxonomy_report.pdf` | PDF 格式分析报告 |
-| `run.log` | 流程运行日志 |
+| File                                   | Description                                 |
+| -------------------------------------- | ------------------------------------------- |
+| `sample<N>.fa`                         | Sampled FASTA sequence file                 |
+| `blastn_result.tsv`                    | BLAST alignment results                     |
+| `taxon_info.tsv`                       | Taxonomic annotation information            |
+| `taxon_info_<rank>_top<N>_summary.tsv` | Statistical tables for each taxonomic level |
+| `taxon_info_<rank>_top<N>_pie.png/pdf` | Pie charts for each taxonomic level         |
+| `seqs_taxonomy_report.html`            | HTML format analysis report                 |
+| `seqs_taxonomy_report.pdf`             | PDF format analysis report                  |
+| `run.log`                              | Pipeline execution log                      |
 
-## 分析报告
+## Analysis Report
 
-生成的报告包含三个主要部分：
+The generated report contains three main sections:
 
-1. **方法**：分析流程介绍、软件版本、主要参数
-2. **结果**：各分类层级（界-种）的统计表格与可视化图表
-3. **结论**：基于分析结果的主要发现与总结
+1. **Methods**: Pipeline description, software versions, main parameters
+2. **Results**: Statistical tables and visualization charts for each taxonomic level (Kingdom to Species)
+3. **Conclusion**: Main findings and summary based on analysis results
 
-报告格式遵循 `template.md` 定义的标准结构，确保分析结果的规范性与一致性。
+Report format follows the standard structure defined in `template.md`, ensuring consistency and standardization of analysis results.
 
-## 示例
+## Example
 
-### 输入文件示例
-
-```
-输入文件: /path/to/sample.pure_unmapped_reads.fq
-输出目录: result_example
-采样数量: 1000
-BLAST线程: 48
-数据库: core_nt
-```
-
-### 运行结果示例
+### Input File Example
 
 ```
-比对成功率: 40.0% (400/1000)
-主要类群: 灵长目 (70.5%), 偶蹄目 (23.5%)
-主要物种: Homo sapiens (21.5%), Sus scrofa (20.5%), Macaca mulatta (17.0%)
+Input file: /path/to/sample.pure_unmapped_reads.fq
+Output directory: result_example
+Sample size: 1000
+BLAST threads: 48
+Database: core_nt
 ```
 
-## 注意事项
+### Execution Result Example
 
-1. **数据库配置**：确保 BLAST 数据库可访问，必要时设置 `BLASTDB` 环境变量
-2. **资源需求**：BLAST 比对计算密集，建议根据可用 CPU 调整线程数
-3. **中文支持**：报告包含中文内容，确保系统已安装中文字体
-4. **磁盘空间**：流程可能产生较大临时文件，确保有足够磁盘空间
+```
+Alignment success rate: 40.0% (400/1000)
+Major groups: Primates (70.5%), Artiodactyla (23.5%)
+Major species: Homo sapiens (21.5%), Sus scrofa (20.5%), Macaca mulatta (17.0%)
+```
 
-## 许可证
+## Notes
+
+1. **Database Configuration**: Ensure BLAST database is accessible; set `BLASTDB` environment variable if needed
+2. **Resource Requirements**: BLAST alignment is compute-intensive; adjust thread count based on available CPU
+3. **Font Support**: Reports contain Chinese content; ensure Chinese fonts are installed on system
+4. **Disk Space**: Pipeline may generate large temporary files; ensure sufficient disk space
+
+## Contact
+
+For questions or suggestions, please submit an Issue or Pull Request.
+
+**Email**: oyjh417701@163.com
+
+## Copyright
+
+June 29 CST 2026
+
+Copyright (c) 2026 OYJH
+
+All Rights Reserved.
+
+## License
 
 MIT License
 
-## 联系方式
+## Acknowledgments
 
-如有问题或建议，请提交 Issue 或 Pull Request。
+This pipeline integrates the following excellent open-source tools:
 
-## 致谢
+- [SeqKit](https://github.com/shenwei356/seqkit) - Fast sequence processing
+- [BLAST+](https://blast.ncbi.nlm.nih.gov) - NCBI sequence alignment
+- [TaxonKit](https://github.com/shenwei356/taxonkit) - Taxonomic information processing
 
-本流程整合了以下优秀开源工具：
+<br />
 
-- [SeqKit](https://github.com/shenwei356/seqkit) - 快速序列处理
-- [BLAST+](https://blast.ncbi.nlm.nih.gov) - NCBI 序列比对
-- [TaxonKit](https://github.com/shenwei356/taxonkit) - 分类学信息处理
+<br />
+
