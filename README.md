@@ -1,4 +1,6 @@
-# NCBI 序列分类学自动化分析流程
+# ASTA - Automated Sequence Taxonomy Agent
+
+**ASTA**（Automatic Sequence Taxonomy Agent，自动序列分类学智能体）
 
 基于智能体的序列比对与物种鉴定自动化流程
 
