@@ -186,6 +186,8 @@ Alignment success rate: 40.0% (400/1000)
 Major groups: Primates (70.5%), Artiodactyla (23.5%)
 Major species: Homo sapiens (21.5%), Sus scrofa (20.5%), Macaca mulatta (17.0%)
 ```
+### Illustration Exampe
+![](https://github.com/Learnerhua/ASTA/blob/main/example/taxon_info_Species_top5_pie.png)
 
 ## Notes
 
