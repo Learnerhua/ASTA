@@ -188,4 +188,4 @@ BLAST 线程数：48
 ```
 
 ### 8.3 示例图示
-![](D:\Work\KMHD\Analysis\NCBI_alignment\pipeline\Github_repo\example\taxon_info_Species_top5_pie.png)
+![](https://github.com/Learnerhua/ASTA/blob/main/example/taxon_info_Species_top5_pie.png)
